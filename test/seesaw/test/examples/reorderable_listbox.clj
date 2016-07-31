@@ -1,18 +1,17 @@
-;  Copyright (c) Dave Ray, 2012. All rights reserved.
+;;  Copyright (c) Dave Ray, 2012. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this 
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.test.examples.reorderable-listbox
   (:use seesaw.core
         seesaw.test.examples.example)
   (:require [seesaw.dnd :as dnd]))
-
 
 (defn list-with-elem-at-index
   "Given a sequence cur-order and elem-to-move is one of the items
@@ -39,15 +38,14 @@ user=> (list-with-elem-at-index l \"b\" 4)
       cur-order
       (if (< new-idx cur-idx)
         (vec (concat (subvec cur-order 0 new-idx)
-                     [ elem-to-move ]
+                     [elem-to-move]
                      (subvec cur-order new-idx cur-idx)
                      (subvec cur-order (inc cur-idx))))
         ;; else new-idx > cur-idx
         (vec (concat (subvec cur-order 0 cur-idx)
                      (subvec cur-order (inc cur-idx) new-idx)
-                     [ elem-to-move ]
+                     [elem-to-move]
                      (subvec cur-order new-idx)))))))
-
 
 (defn reorderable-listbox
   "A listbox of items that the user can reorder by dragging and
@@ -74,14 +72,13 @@ new items are allowed to be added, nor may existing items be removed."
                                    (:index drop-location)
                                    (item-set data))
                             (let [new-order (list-with-elem-at-index
-                                              @item-list-atom data
-                                              (:index drop-location))]
+                                             @item-list-atom data
+                                             (:index drop-location))]
                               (reset! item-list-atom new-order)
                               (config! target :model new-order))))]
                :export {:actions (constantly :copy)
                         :start   (fn [c]
                                    [dnd/string-flavor (selection c)])}))))
-
 
 (defexample []
   (let [atom-with-cur-item-order (atom ["Pie" "Cake" "Cookies"

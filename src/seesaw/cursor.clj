@@ -1,23 +1,23 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Functions for creating Swing cursors."
       :author "Dave Ray"}
-  seesaw.cursor
+ seesaw.cursor
   (:use [seesaw.util :only [constant-map illegal-argument]])
   (:import [java.awt Cursor Toolkit]))
 
 (def ^{:private true} built-in-cursor-map
   (constant-map Cursor {:suffix "_CURSOR"}
-    :crosshair :custom :default :hand :move :text :wait
-    :e-resize :n-resize :ne-resize :nw-resize :s-resize :se-resize :sw-resize :w-resize))
+                :crosshair :custom :default :hand :move :text :wait
+                :e-resize :n-resize :ne-resize :nw-resize :s-resize :se-resize :sw-resize :w-resize))
 
 (defn- custom-cursor
   [^java.awt.Image image & [point]]
@@ -46,10 +46,10 @@
 
   Examples:
 
-    ; The hand cursor
+    ;; The hand cursor
     (cursor :hand)
 
-    ; Create a custom cursor from a URL:
+    ;; Create a custom cursor from a URL:
     (cursor (icon \"http://path/to/my/cursor.png\") [5 5])
 
   Notes:
@@ -75,11 +75,10 @@
   ^java.awt.Cursor
   [type & args]
   (cond
-    ; TODO protocol if this gets any more nasty
+    ;; TODO protocol if this gets any more nasty
     (keyword? type) (Cursor. (built-in-cursor-map type))
     (instance? Cursor type) type
     (instance? java.awt.Image type) (apply custom-cursor type args)
     (instance? javax.swing.ImageIcon type) (apply cursor (.getImage ^javax.swing.ImageIcon type) args)
     :else (illegal-argument "Don't know how to make cursor from %s" type)))
-
 

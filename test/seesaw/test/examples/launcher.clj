@@ -1,12 +1,12 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.test.examples.launcher
   (:use [seesaw core swingx keymap]
@@ -14,7 +14,7 @@
   (:require [seesaw.bind :as b]
             [seesaw.dev :as dev]))
 
-; A simple launcher for all the examples.
+;; A simple launcher for all the examples.
 
 (def examples
   ['behave
@@ -64,18 +64,18 @@
 
 (defn make-frame []
   (frame
-    :title "Seesaw Example Launcher"
-    :size [200 :by 500]
-    :content
-      (border-panel
-        :hgap 5 :vgap 5 :border 5
-        :center (scrollable (listbox-x
-                              :id :list
-                              :model examples
-                              :selection-mode :single
-                              :highlighters [(hl-simple-striping)
-                                            ((hl-color :background "#88F") :rollover-row)]))
-        :south  (button :id :launch :text "Launch"))))
+   :title "Seesaw Example Launcher"
+   :size [200 :by 500]
+   :content
+   (border-panel
+    :hgap 5 :vgap 5 :border 5
+    :center (scrollable (listbox-x
+                         :id :list
+                         :model examples
+                         :selection-mode :single
+                         :highlighters [(hl-simple-striping)
+                                        ((hl-color :background "#88F") :rollover-row)]))
+    :south  (button :id :launch :text "Launch"))))
 
 (defn launch-example [s]
   (let [example-ns (str "seesaw.test.examples." s)
@@ -88,8 +88,8 @@
 (defn add-behaviors [f]
   (let [{:keys [list launch]} (group-by-id f)]
     (b/bind
-      (b/selection list)
-      (b/property launch :enabled?))
+     (b/selection list)
+     (b/property launch :enabled?))
 
     (listen list :mouse-clicked
             (fn [e]
@@ -106,7 +106,7 @@
 (defexample []
   (dev/debug!)
   (-> (make-frame)
-    add-behaviors))
+      add-behaviors))
 
-;(run :dispose)
+;;(run :dispose)
 

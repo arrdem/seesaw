@@ -1,16 +1,16 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Basic graphics functions to simplify use of Graphics2D."
       :author "Dave Ray"}
-  seesaw.graphics
+ seesaw.graphics
   (:use [seesaw.color :only [to-color]]
         [seesaw.font :only [to-font]]
         [seesaw.util :only [illegal-argument]])
@@ -36,8 +36,8 @@
     (instance? javax.swing.ImageIcon v) (.getImage ^javax.swing.ImageIcon v)
     :else (illegal-argument "Don't know how to make image from %s" v)))
 
-;*******************************************************************************
-; Graphics context state
+;;*******************************************************************************
+;; Graphics context state
 
 (defmacro push
   "Push a Graphics2D context (Graphics2d/create) and automatically dispose it.
@@ -59,8 +59,8 @@
        (finally
          (. ~g2d dispose)))))
 
-;*******************************************************************************
-; Basic shapes
+;;*******************************************************************************
+;; Basic shapes
 
 (defn line [x1 y1 x2 y2] (java.awt.geom.Line2D$Double. x1 y1 x2 y2))
 
@@ -70,13 +70,11 @@
   height.
   "
   ([x y w h] (java.awt.geom.Rectangle2D$Double.
-                (if (> w 0) x (+ x w))
-                (if (> h 0) y (+ y h))
-                (Math/abs (double w))
-                (Math/abs (double h))
-                                        ))
+              (if (> w 0) x (+ x w))
+              (if (> h 0) y (+ y h))
+              (Math/abs (double w))
+              (Math/abs (double h))))
   ([x y w] (rect x y w w)))
-
 
 (defn rounded-rect
   "
@@ -84,21 +82,21 @@
   height and corner radii.
   "
   ([x y w h rx ry] (java.awt.geom.RoundRectangle2D$Double.
-                      (if (> w 0) x (+ x w))
-                      (if (> h 0) y (+ y h))
-                      (Math/abs (double w))
-                      (Math/abs (double h))
-                      rx ry))
+                    (if (> w 0) x (+ x w))
+                    (if (> h 0) y (+ y h))
+                    (Math/abs (double w))
+                    (Math/abs (double h))
+                    rx ry))
   ([x y w h rx] (rounded-rect x y w h rx rx))
   ([x y w h] (rounded-rect x y w h 5)))
 
 (defn ellipse
   "Create an ellipse that occupies the given rectangular region"
   ([x y w h]  (java.awt.geom.Ellipse2D$Double.
-                      (if (> w 0) x (+ x w))
-                      (if (> h 0) y (+ y h))
-                      (Math/abs (double w))
-                      (Math/abs (double h))))
+               (if (> w 0) x (+ x w))
+               (if (> h 0) y (+ y h))
+               (Math/abs (double w))
+               (Math/abs (double h))))
   ([x y w]  (ellipse x y w w)))
 
 (defn circle
@@ -108,14 +106,14 @@
 
 (defn arc
   ([x y w h start extent arc-type]
-    (java.awt.geom.Arc2D$Double.
-      (if (> w 0) x (+ x w))
-      (if (> h 0) y (+ y h))
-      (Math/abs (double w))
-      (Math/abs (double h))
-      start extent arc-type))
+   (java.awt.geom.Arc2D$Double.
+    (if (> w 0) x (+ x w))
+    (if (> h 0) y (+ y h))
+    (Math/abs (double w))
+    (Math/abs (double h))
+    start extent arc-type))
   ([x y w h start extent]
-    (arc x y w h start extent java.awt.geom.Arc2D/OPEN)))
+   (arc x y w h start extent java.awt.geom.Arc2D/OPEN)))
 
 (defn chord
   [x y w h start extent]
@@ -137,22 +135,18 @@
       (.addPoint p x y))
     p))
 
-(def ^{:private true} path-ops {
-  'line-to '.lineTo
-  'move-to '.moveTo
-  'curve-to '.curveTo
-  'quad-to 'quad-to
-})
-
-(defmacro path [opts & forms]
-  (when (not (vector? opts)) (illegal-argument "path must start with vector of (possibly empty) options"))
-  (let [p (gensym "path")]
-    `(let [~p (java.awt.geom.Path2D$Double.)]
-       ; Insert an initial moveTo to avoid needless exceptions
-       (.moveTo ~p 0 0)
-       ~@(for [f forms]
-           (cons (get path-ops (first f)) (cons p (rest f))))
-       ~p)))
+(def ^{:private true} path-ops {'line-to '.lineTo
+                                'move-to '.moveTo
+                                'curve-to '.curveTo
+                                'quad-to 'quad-to}) (defmacro path [opts & forms]
+                                                      (when (not (vector? opts)) (illegal-argument "path must start with vector of (possibly empty) options"))
+                                                      (let [p (gensym "path")]
+                                                        `(let [~p (java.awt.geom.Path2D$Double.)]
+       ;; Insert an initial moveTo to avoid needless exceptions
+                                                           (.moveTo ~p 0 0)
+                                                           ~@(for [f forms]
+                                                               (cons (get path-ops (first f)) (cons p (rest f))))
+                                                           ~p)))
 
 (defrecord StringShape [x y value])
 (defn string-shape [x y value] (StringShape. x y value))
@@ -162,8 +156,8 @@
 (defn image-shape [x y image]
   (ImageShape. x y (to-image image)))
 
-;*******************************************************************************
-; Coordinate transforms
+;;*******************************************************************************
+;; Coordinate transforms
 
 (defn rotate
   "Apply a rotation to the graphics context by degrees
@@ -185,8 +179,8 @@
   ([^java.awt.Graphics2D g2d sx sy] (.scale g2d sx sy) g2d)
   ([^java.awt.Graphics2D g2d s]     (.scale g2d s s) g2d))
 
-;*******************************************************************************
-; Gradients
+;;*******************************************************************************
+;; Gradients
 
 (defn- ^java.awt.geom.Point2D$Float to-point2d-f [[x y]] (java.awt.geom.Point2D$Float. (float x) (float y)))
 (def ^{:private true} default-start [0 0])
@@ -196,7 +190,7 @@
 (def ^{:private true} cycle-map
   {:none    java.awt.MultipleGradientPaint$CycleMethod/NO_CYCLE
    :repeat  java.awt.MultipleGradientPaint$CycleMethod/REPEAT
-   :reflect java.awt.MultipleGradientPaint$CycleMethod/REFLECT })
+   :reflect java.awt.MultipleGradientPaint$CycleMethod/REFLECT})
 
 (defn linear-gradient
   "Creates a linear gradient suitable for use on the :foreground and
@@ -215,7 +209,7 @@
 
   Examples:
 
-    ; create a horizontal red, white and blue gradiant with three equal parts
+    ;; create a horizontal red, white and blue gradiant with three equal parts
     (linear-gradient :fractions [0 0.5 1.0] :colors [:red :white :blue])
 
   See:
@@ -226,14 +220,14 @@
            end       default-end
            fractions default-fractions
            colors    default-colors
-           cycle     :none }
+           cycle     :none}
       :as opts}]
-    (java.awt.LinearGradientPaint.
-      (to-point2d-f start)
-      (to-point2d-f end)
-      (float-array fractions)
-      (into-array java.awt.Color (map to-color colors))
-      (cycle-map cycle)))
+  (java.awt.LinearGradientPaint.
+   (to-point2d-f start)
+   (to-point2d-f end)
+   (float-array fractions)
+   (into-array java.awt.Color (map to-color colors))
+   (cycle-map cycle)))
 
 (def ^{:private true} default-center [0 0])
 (def ^{:private true} default-radius 1.0)
@@ -256,7 +250,7 @@
 
   Examples:
 
-    ; create a red, white and blue gradiant with three equal parts
+    ;; create a red, white and blue gradiant with three equal parts
     (radial-gradient :radius 100.0 :fractions [0 0.5 1.0] :colors [:red :white :blue])
 
   See:
@@ -267,44 +261,36 @@
            radius    default-radius
            fractions default-fractions
            colors    default-colors
-           cycle     :none }
+           cycle     :none}
       :as opts}]
-    (java.awt.RadialGradientPaint.
-      (to-point2d-f center)
-      (float radius)
-      (to-point2d-f (or focus center))
-      (float-array fractions)
-      ^{:tag "[Ljava.awt.Color;"} (into-array java.awt.Color (map to-color colors))
-      ^java.awt.MultipleGradientPaint$CycleMethod (cycle-map cycle)))
+  (java.awt.RadialGradientPaint.
+   (to-point2d-f center)
+   (float radius)
+   (to-point2d-f (or focus center))
+   (float-array fractions)
+   ^{:tag "[Ljava.awt.Color;;"} (into-array java.awt.Color (map to-color colors))
+   ^java.awt.MultipleGradientPaint$CycleMethod (cycle-map cycle)))
 
-;*******************************************************************************
-; Strokes
+;;*******************************************************************************
+;; Strokes
 
-(def ^{:private true} stroke-caps {
-  :square java.awt.BasicStroke/CAP_SQUARE
-  :butt   java.awt.BasicStroke/CAP_BUTT
-  :round  java.awt.BasicStroke/CAP_ROUND
-})
-
-(def ^{:private true} stroke-joins {
-  :bevel java.awt.BasicStroke/JOIN_BEVEL
-  :miter java.awt.BasicStroke/JOIN_MITER
-  :round java.awt.BasicStroke/JOIN_ROUND
-})
-
-(defn stroke
-  "Create a new stroke with the given properties:
+(def ^{:private true} stroke-caps {:square java.awt.BasicStroke/CAP_SQUARE
+                                   :butt   java.awt.BasicStroke/CAP_BUTT
+                                   :round  java.awt.BasicStroke/CAP_ROUND}) (def ^{:private true} stroke-joins {:bevel java.awt.BasicStroke/JOIN_BEVEL
+                                                                                                                :miter java.awt.BasicStroke/JOIN_MITER
+                                                                                                                :round java.awt.BasicStroke/JOIN_ROUND}) (defn stroke
+                                                                                                                                                           "Create a new stroke with the given properties:
 
     :width Width of the stroke
   "
-  [& {:keys [width cap join miter-limit dashes dash-phase]
-      :or {width 1 cap :square join :miter miter-limit 10.0 dashes nil dash-phase 0.0}}]
-  (java.awt.BasicStroke. width
-                         (stroke-caps cap)
-                         (stroke-joins join)
-                         miter-limit
-                         (when (seq dashes) (float-array dashes))
-                         dash-phase))
+                                                                                                                                                           [& {:keys [width cap join miter-limit dashes dash-phase]
+                                                                                                                                                               :or {width 1 cap :square join :miter miter-limit 10.0 dashes nil dash-phase 0.0}}]
+                                                                                                                                                           (java.awt.BasicStroke. width
+                                                                                                                                                                                  (stroke-caps cap)
+                                                                                                                                                                                  (stroke-joins join)
+                                                                                                                                                                                  miter-limit
+                                                                                                                                                                                  (when (seq dashes) (float-array dashes))
+                                                                                                                                                                                  dash-phase))
 
 (defn to-stroke
   "Convert v to a stroke. As follows depending on v:
@@ -323,8 +309,8 @@
 
 (def ^{:private true} default-stroke (stroke))
 
-;*******************************************************************************
-; Styles
+;;*******************************************************************************
+;; Styles
 
 (defn ^java.awt.Paint to-paint
   [v]
@@ -356,10 +342,10 @@
 
   Examples:
 
-    ; Red on black
+    ;; Red on black
     (style :foreground :red :background :black :font :monospace)
 
-    ; Red, 8-pixel line with no fill.
+    ;; Red, 8-pixel line with no fill.
     (style :foreground :red :stroke 8)
 
   See:
@@ -368,10 +354,10 @@
   "
   [& {:keys [foreground background stroke font]}]
   (Style.
-    (to-paint foreground)
-    (to-paint background)
-    (to-stroke stroke)
-    (to-font font)))
+   (to-paint foreground)
+   (to-paint background)
+   (to-stroke stroke)
+   (to-font font)))
 
 (defn update-style
   "Update a style with new properties and return a new style. This is basically
@@ -389,48 +375,48 @@
     (seesaw.graphics/draw)
   "
   [s & {:keys [foreground background stroke font]
-        :or { foreground (:foreground s) ; Preserve original value and watch out for nil
-              background (:background s)
-              stroke (:stroke s)
-              font (:font s) }}]
+        :or {foreground (:foreground s) ;; Preserve original value and watch out for nil
+             background (:background s)
+             stroke (:stroke s)
+             font (:font s)}}]
   (Style.
-    (to-paint foreground)
-    (to-paint background)
-    (to-stroke stroke)
-    (to-font font)))
+   (to-paint foreground)
+   (to-paint background)
+   (to-stroke stroke)
+   (to-font font)))
 
-;*******************************************************************************
-; Shape drawing protocol
+;;*******************************************************************************
+;; Shape drawing protocol
 
 (defprotocol Draw
   (draw* [shape ^java.awt.Graphics2D g2d style]))
 
 (extend-type java.awt.Shape Draw
-  (draw* [shape ^java.awt.Graphics2D g2d style]
-    (let [fg (:foreground style)
-          bg (:background style)
-          s  (or (:stroke style) default-stroke)]
-      (when bg
-        (do
-          (.setPaint g2d bg)
-          (.fill g2d shape)))
-      (when fg
-        (do
-          (.setStroke g2d s)
-          (.setPaint g2d fg)
-          (.draw g2d shape))))))
+             (draw* [shape ^java.awt.Graphics2D g2d style]
+               (let [fg (:foreground style)
+                     bg (:background style)
+                     s  (or (:stroke style) default-stroke)]
+                 (when bg
+                   (do
+                     (.setPaint g2d bg)
+                     (.fill g2d shape)))
+                 (when fg
+                   (do
+                     (.setStroke g2d s)
+                     (.setPaint g2d fg)
+                     (.draw g2d shape))))))
 
 (extend-type StringShape Draw
-  (draw* [shape ^java.awt.Graphics2D g2d style]
-    (let [fg (:foreground style)
-          f  (:font style)]
-      (when f (.setFont g2d f))
-      (.setPaint g2d (or fg java.awt.Color/BLACK))
-      (.drawString g2d ^String (:value shape) (float (:x shape)) (float (:y shape))))))
+             (draw* [shape ^java.awt.Graphics2D g2d style]
+               (let [fg (:foreground style)
+                     f  (:font style)]
+                 (when f (.setFont g2d f))
+                 (.setPaint g2d (or fg java.awt.Color/BLACK))
+                 (.drawString g2d ^String (:value shape) (float (:x shape)) (float (:y shape))))))
 
 (extend-type ImageShape Draw
-  (draw* [shape ^java.awt.Graphics2D g2d style]
-    (.drawImage g2d ^java.awt.Image (:image shape) ^Integer (:x shape) ^Integer (:y shape) nil)))
+             (draw* [shape ^java.awt.Graphics2D g2d style]
+               (.drawImage g2d ^java.awt.Image (:image shape) ^Integer (:x shape) ^Integer (:y shape) nil)))
 
 (defn draw
   "Draw a one or more shape/style pairs to the given graphics context.
@@ -446,8 +432,8 @@
   "
   ([g2d] g2d)
   ([g2d shape style]
-      (draw* shape g2d style)
-      g2d)
+   (draw* shape g2d style)
+   g2d)
   ([g2d shape style & more]
    (let [ret (draw g2d shape style)]
      (if more

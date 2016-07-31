@@ -1,12 +1,12 @@
-;  Copyright (c) Dave Ray, 2012. All rights reserved.
+;;  Copyright (c) Dave Ray, 2012. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this 
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.test.examples.toggle-listbox
   (:import [java.awt Dimension]
@@ -15,7 +15,6 @@
   (:use seesaw.core
         seesaw.test.examples.example)
   (:require [seesaw.dnd :as dnd]))
-
 
 ;; I learned about the trick of first calling setSize on a Swing
 ;; component, in order to paint an image of it to a Graphics object
@@ -31,7 +30,6 @@
     (.setSize comp pref-siz)
     (.paint comp gr)
     (ImageIcon. bi)))
-
 
 (defn toggle-listbox
   "A listbox of strings that are displayed as icons that look like
@@ -53,17 +51,17 @@ there purely for display purposes."
         max-height (apply max (map #(-> % :button-sel .getPreferredSize .height)
                                    buttons))
         label-to-icon-sel (into {}
-                           (map (fn [{:keys [label button-sel]}]
-                                  [label
-                                   (component-icon-image button-sel
-                                                         max-width max-height)])
-                                buttons))
+                                (map (fn [{:keys [label button-sel]}]
+                                       [label
+                                        (component-icon-image button-sel
+                                                              max-width max-height)])
+                                     buttons))
         label-to-icon-unsel (into {}
-                           (map (fn [{:keys [label button-unsel]}]
-                                  [label
-                                   (component-icon-image button-unsel
-                                                         max-width max-height)])
-                                buttons))
+                                  (map (fn [{:keys [label button-unsel]}]
+                                         [label
+                                          (component-icon-image button-unsel
+                                                                max-width max-height)])
+                                       buttons))
         render-item (fn [renderer info]
                       (let [{:keys [value selected?]} info
                             m (if selected?
@@ -72,7 +70,6 @@ there purely for display purposes."
                         (config! renderer :icon (m value) :text "")))]
     (listbox :model label-strs
              :renderer render-item)))
-
 
 (defexample []
   (frame

@@ -1,16 +1,16 @@
-;  Copyright (c) Dave Ray, 2012. All rights reserved.
+;;  Copyright (c) Dave Ray, 2012. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Support for RSyntaxTextArea: http://fifesoft.com/rsyntaxtextarea/index.php"
       :author "Dave Ray"}
-  seesaw.rsyntax
+ seesaw.rsyntax
   (:require [seesaw.core :as core]
             [seesaw.util :as util]
             [seesaw.options :as options]
@@ -28,18 +28,18 @@
 
 (def text-area-options
   (merge
-    core/text-area-options
-    (options/option-map
-      (options/bean-option
-        [:syntax :syntax-editing-style]
-        org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-        syntax-table
-        nil
-        (keys syntax-table)))))
+   core/text-area-options
+   (options/option-map
+    (options/bean-option
+     [:syntax :syntax-editing-style]
+     org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+     syntax-table
+     nil
+     (keys syntax-table)))))
 
 (widget-options/widget-option-provider
-  org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-  text-area-options)
+ org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+ text-area-options)
 
 (defn text-area
   "Create a new RSyntaxTextArea.

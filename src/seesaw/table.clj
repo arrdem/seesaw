@@ -1,12 +1,12 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.table
   (:use [seesaw.util :only [illegal-argument]]))
@@ -45,7 +45,7 @@
     (proxy [javax.swing.table.DefaultTableModel] [(object-array column-names) 0]
       (isCellEditable [row col] false)
       (setRowCount [^Integer rows]
-        ; trick to force proxy-super macro to see correct type to avoid reflection.
+        ;; trick to force proxy-super macro to see correct type to avoid reflection.
         (swap! full-values (fn [v]
                              (if (< rows (count v))
                                (subvec v rows)
@@ -54,19 +54,19 @@
           (proxy-super setRowCount rows)))
       (addRow [^objects values]
         (swap! full-values conj (last values))
-        ; TODO reflection - I can't get rid of the reflection here without crashes
-        ; It has something to do with Object[] vs. Vector overrides.
+        ;; TODO reflection - I can't get rid of the reflection here without crashes
+        ;; It has something to do with Object[] vs. Vector overrides.
         (proxy-super addRow values))
       (insertRow [row ^objects values]
         (swap! full-values insert-at row (last values))
-        ; TODO reflection - I can't get rid of the reflection here without crashes
-        ; It has something to do with Object[] vs. Vector overrides.
+        ;; TODO reflection - I can't get rid of the reflection here without crashes
+        ;; It has something to do with Object[] vs. Vector overrides.
         (proxy-super insertRow row values))
       (removeRow [row]
         (swap! full-values remove-at row)
         (let [^javax.swing.table.DefaultTableModel this this]
           (proxy-super removeRow row)))
-      ; TODO this stuff is an awful hack and now that I'm wiser, I should fix it.
+      ;; TODO this stuff is an awful hack and now that I'm wiser, I should fix it.
       (getValueAt [row col]
         (if (= -1 row col)
           column-key-map
@@ -85,29 +85,29 @@
 
 (defn- get-full-value [^javax.swing.table.TableModel model row]
   (try
-    ; Try to grab the full value using proxy hack above
+    ;; Try to grab the full value using proxy hack above
     (.getValueAt model row -1)
     (catch ArrayIndexOutOfBoundsException e nil)))
 
 (defn- get-column-key-map [^javax.swing.table.TableModel model]
   (try
-    ; Try to grab the column to key map using proxy hack above
+    ;; Try to grab the column to key map using proxy hack above
     (.getValueAt model -1 -1)
     (catch ArrayIndexOutOfBoundsException e
-      ; Otherwise, just map from column names to values
+      ;; Otherwise, just map from column names to values
       (let [n (.getColumnCount model)]
         (apply hash-map
                (interleave
-                 (map #(.getColumnName model %) (range n))
-                 (range n)))))))
+                (map #(.getColumnName model %) (range n))
+                (range n)))))))
 
 (defn table-model
   "Creates a TableModel from column and row data. Takes two options:
 
-    :columns - a list of keys, or maps. If a key, then (name key) is used as the 
-               column name. If a map, it can be in the form 
-               {:key key :text text :class class} where key is use to index the 
-               row data, text (optional) is used as the column name, and 
+    :columns - a list of keys, or maps. If a key, then (name key) is used as the
+               column name. If a map, it can be in the form
+               {:key key :text text :class class} where key is use to index the
+               row data, text (optional) is used as the column name, and
                class (optional) specifies the object class of the column data
                returned by getColumnClass. The order establishes the order of the
                columns in the table.
@@ -141,11 +141,11 @@
       (.addRow model ^objects (unpack-row col-key-map row)))
     model))
 
-; TODO this is used in places that assume DefaultTableModel
+;; TODO this is used in places that assume DefaultTableModel
 (defn- ^javax.swing.table.DefaultTableModel to-table-model [v]
   (cond
     (instance? javax.swing.table.TableModel v) v
-    ; TODO replace with (to-widget) so (value-at) works with events and stuff
+    ;; TODO replace with (to-widget) so (value-at) works with events and stuff
     (instance? javax.swing.JTable v) (.getModel ^javax.swing.JTable v)
     :else (illegal-argument "Can't get table model from %s" v)))
 
@@ -154,11 +154,11 @@
   (if (and (>= row 0) (< row (.getRowCount model)))
     (let [full-row (get-full-value model row)]
       (merge
-        full-row
-        (reduce
-          (fn [result k] (assoc result k (.getValueAt model row (col-key-map k))))
-          {}
-          (keys col-key-map))))
+       full-row
+       (reduce
+        (fn [result k] (assoc result k (.getValueAt model row (col-key-map k))))
+        {}
+        (keys col-key-map))))
     nil))
 
 (defn value-at
@@ -178,13 +178,13 @@
 
   Examples:
 
-    ; Retrieve row 3
+    ;; Retrieve row 3
     (value-at t 3)
 
-    ; Retrieve rows 1, 3, and 5
+    ;; Retrieve rows 1, 3, and 5
     (value-at t [1 3 5])
 
-    ; Print values of selected rows
+    ;; Print values of selected rows
     (listen t :selection
       (fn [e]
         (println (value-at t (selection {:multi? true} t)))))
@@ -214,7 +214,7 @@
 
   Examples:
 
-    ; Given a table created with column keys :a and :b, update row 3 and 5
+    ;; Given a table created with column keys :a and :b, update row 3 and 5
     (update-at! t 3 [\"Col0 Value\" \"Col1 Value\"]
                   5 { :a \"A value\" \"B value\" })
 
@@ -224,23 +224,23 @@
     http://download.oracle.com/javase/6/docs/api/javax/swing/table/TableModel.html
   "
   ([target row value]
-    (let [target      (to-table-model target)
-          col-key-map (get-column-key-map target)
-          ^objects row-values  (unpack-row col-key-map value)]
-      (doseq [i (range 0 (.getColumnCount target))]
-        ; TODO this precludes setting a cell to nil. Do we care?
-        (let [v (aget row-values i)]
-          (when-not (nil? v)
-            (.setValueAt target (aget row-values i) row i))))
-      ; merge with current full-map value so that extra fields aren't lost.
-      (.setValueAt target
-                   (merge (.getValueAt target row -1)
-                          (last row-values)) row -1))
-    target)
+   (let [target      (to-table-model target)
+         col-key-map (get-column-key-map target)
+         ^objects row-values  (unpack-row col-key-map value)]
+     (doseq [i (range 0 (.getColumnCount target))]
+        ;; TODO this precludes setting a cell to nil. Do we care?
+       (let [v (aget row-values i)]
+         (when-not (nil? v)
+           (.setValueAt target (aget row-values i) row i))))
+      ;; merge with current full-map value so that extra fields aren't lost.
+     (.setValueAt target
+                  (merge (.getValueAt target row -1)
+                         (last row-values)) row -1))
+   target)
   ([target row value & more]
-    (when more
-      (apply update-at! target more))
-    (update-at! target row value)))
+   (when more
+     (apply update-at! target more))
+   (update-at! target row value)))
 
 (defn insert-at!
   "Inserts one or more rows into a table. The arguments are one or more row-index/value
@@ -254,24 +254,24 @@
 
   Examples:
 
-    ; Insert a row at the front of the table
+    ;; Insert a row at the front of the table
     (insert-at! 0 {:name \"Agent Cooper\" :likes \"Cherry pie and coffee\"})
 
-    ; Insert two rows, one at the front, one before row 3
+    ;; Insert two rows, one at the front, one before row 3
     (insert-at! 0 {:name \"Agent Cooper\" :likes \"Cherry pie and coffee\"}
                 3 {:name \"Big Ed\"       :likes \"Norma\"})
 
   "
   ([target ^Integer row value]
-    (let [target  (to-table-model target)
-          col-key-map (get-column-key-map target)
-          ^objects row-values  (unpack-row col-key-map value)]
-      (.insertRow target row row-values))
+   (let [target  (to-table-model target)
+         col-key-map (get-column-key-map target)
+         ^objects row-values  (unpack-row col-key-map value)]
+     (.insertRow target row row-values))
    target)
   ([target row value & more]
-    (when more
-      (apply insert-at! target more))
-    (insert-at! target row value)))
+   (when more
+     (apply insert-at! target more))
+   (insert-at! target row value)))
 
 (defn remove-at!
   "Remove one or more rows from a table or table model by index. Args are a list of row indices at
@@ -281,19 +281,19 @@
 
   Examples:
 
-    ; Remove first row
+    ;; Remove first row
     (remove-at! t 0)
 
-    ; Remove first and third row
+    ;; Remove first and third row
     (remove-at! t 0 3)
   "
   ([target row]
-    (.removeRow (to-table-model target) row)
+   (.removeRow (to-table-model target) row)
    target)
   ([target row & more]
-    (when more
-      (apply remove-at! target more))
-    (remove-at! target row)))
+   (when more
+     (apply remove-at! target more))
+   (remove-at! target row)))
 
 (defn clear!
   "Clear all rows from a table model or JTable.

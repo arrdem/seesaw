@@ -1,17 +1,17 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this 
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Functions for handling fonts. Note that most core widget functions
             use these implicitly through the :font option."
       :author "Dave Ray"}
-  seesaw.font
+ seesaw.font
   (:use [seesaw.util :only [constant-map resource resource-key?]])
   (:import [java.awt Font GraphicsEnvironment]))
 
@@ -19,15 +19,15 @@
   "Returns a seq of strings naming the font families on the system. These
   are the names that are valid in :name option (seesaw.font/font) as well
   as in font descriptor strings like \"Arial-BOLD-20\"
-  
+
   See:
     (seesaw.core/font)
   "
   ([] (font-families nil))
   ([locale]
-    (-> (GraphicsEnvironment/getLocalGraphicsEnvironment) 
-      (.getAvailableFontFamilyNames locale)
-      seq)))
+   (-> (GraphicsEnvironment/getLocalGraphicsEnvironment)
+       (.getAvailableFontFamilyNames locale)
+       seq)))
 
 (def ^{:private true} style-table (constant-map Font :bold :plain :italic))
 (defn- get-style-mask [v]
@@ -47,7 +47,7 @@
 
   Options are:
 
-    :name   The name of the font. Besides string values, also possible are 
+    :name   The name of the font. Besides string values, also possible are
             any of :monospaced, :serif, :sans-serif. See (seesaw.font/font-families)
             to get a system-specific list of all valid values.
     :style  The style. One of :bold, :plain, :italic, or a set of those values
@@ -59,10 +59,10 @@
 
   Examples:
 
-    ; Create a font from a font-spec (see JavaDocs)
+    ;; Create a font from a font-spec (see JavaDocs)
     (font \"ARIAL-ITALIC-20\")
 
-    ; Create a 12 pt bold and italic monospace
+    ;; Create a 12 pt bold and italic monospace
     (font :style #{:bold :italic} :name :monospaced)
 
   See:
@@ -107,5 +107,5 @@
     (nil? f) nil
     (instance? Font f) f
     (map? f) (apply font (flatten (seq f)))
-    true (font f))) 
-    
+    true (font f)))
+

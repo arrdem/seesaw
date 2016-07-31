@@ -1,23 +1,23 @@
-;  Copyright (c) Dave Ray, Meikel Brandmeyer 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, Meikel Brandmeyer 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this 
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.forms
   (:import
-    javax.swing.JPanel
-    com.jgoodies.forms.builder.DefaultFormBuilder
-    com.jgoodies.forms.layout.FormLayout)
+   javax.swing.JPanel
+   com.jgoodies.forms.builder.DefaultFormBuilder
+   com.jgoodies.forms.layout.FormLayout)
   (:require
-    seesaw.core)
+   seesaw.core)
   (:use
-    [seesaw.options :only (bean-option default-option apply-options ignore-options option-map option-provider)]
-    [seesaw.util :only (resource)]))
+   [seesaw.options :only (bean-option default-option apply-options ignore-options option-map option-provider)]
+   [seesaw.util :only (resource)]))
 
 (defprotocol ComponentSpec
   (append [this builder] "Add the given component to the form builder"))
@@ -92,24 +92,23 @@
 
 (def ^{:private true} layout-options
   (option-map
-    (default-option 
-      :column-groups 
-      (fn set-column-groups [c v]
-        (cond
-          (instance? FormLayout c)
-            (.setColumnGroups c (into-array (map int-array v)))
-          :else
-            (set-column-groups (.getLayout c) v))))))
+   (default-option
+     :column-groups
+     (fn set-column-groups [c v]
+       (cond
+         (instance? FormLayout c)
+         (.setColumnGroups c (into-array (map int-array v)))
+         :else
+         (set-column-groups (.getLayout c) v))))))
 
 (def ^{:private true} builder-options
   (option-map
-    (default-option :items #(doseq [item %2] (append item %1)))
-    (default-option :default-dialog-border? #(when %2 (.setDefaultDialogBorder %1)))
-    (bean-option :default-row-spec DefaultFormBuilder)
-    (bean-option :leading-column-offset DefaultFormBuilder)
-    (bean-option :line-gap-size DefaultFormBuilder)
-    (bean-option :paragraph-gap-size DefaultFormBuilder)))
-
+   (default-option :items #(doseq [item %2] (append item %1)))
+   (default-option :default-dialog-border? #(when %2 (.setDefaultDialogBorder %1)))
+   (bean-option :default-row-spec DefaultFormBuilder)
+   (bean-option :leading-column-offset DefaultFormBuilder)
+   (bean-option :line-gap-size DefaultFormBuilder)
+   (bean-option :paragraph-gap-size DefaultFormBuilder)))
 
 (def ^{:private true} ignore-builder-options
   (ignore-options builder-options))
@@ -119,8 +118,6 @@
 
 (option-provider DefaultFormBuilder (merge builder-options ignore-layout-options))
 (option-provider FormLayout (merge layout-options ignore-builder-options))
-
-
 
 (defn ^JPanel forms-panel
   "Construct a panel with a FormLayout. The column spec is

@@ -1,12 +1,12 @@
-;  Copyright (c) Dave Ray, 2011. All rights reserved.
+;;  Copyright (c) Dave Ray, 2011. All rights reserved.
 
-;   The use and distribution terms for this software are covered by the
-;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;   which can be found in the file epl-v10.html at the root of this 
-;   distribution.
-;   By using this software in any fashion, you are agreeing to be bound by
-;   the terms of this license.
-;   You must not remove this notice, or any other, from this software.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.invoke
   (:import [javax.swing SwingUtilities]))
@@ -15,19 +15,19 @@
 
 (defn invoke-now* [f & args]
   (let [result (atom nil)]
-   (letfn [(invoker [] (reset! result (apply f args)))]
-     (if (SwingUtilities/isEventDispatchThread)
-       (invoker)
-       (SwingUtilities/invokeAndWait invoker))
-     @result)))
+    (letfn [(invoker [] (reset! result (apply f args)))]
+      (if (SwingUtilities/isEventDispatchThread)
+        (invoker)
+        (SwingUtilities/invokeAndWait invoker))
+      @result)))
 
-(defn invoke-soon* 
+(defn invoke-soon*
   [f & args]
   (if (SwingUtilities/isEventDispatchThread)
     (apply f args)
     (apply invoke-later* f args)))
 
-(defmacro invoke-later 
+(defmacro invoke-later
   "Equivalent to SwingUtilities/invokeLater. Executes the given body sometime
   in the future on the Swing UI thread. For example,
 
@@ -39,8 +39,8 @@
     (seesaw.core/invoke-later) is an alias of this macro.
 
   See:
-  
-    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeLater(java.lang.Runnable) 
+
+    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeLater(java.lang.Runnable)
   "
   [& body] `(invoke-later* (fn [] ~@body)))
 
@@ -58,7 +58,7 @@
     (seesaw.core/invoke-now) is an alias of this macro.
 
   See:
-    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeAndWait(java.lang.Runnable) 
+    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeAndWait(java.lang.Runnable)
   "
   [& body] `(invoke-now*   (fn [] ~@body)))
 
@@ -74,15 +74,15 @@
 
   See:
     (seesaw.core/invoke-later)
-    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeLater(java.lang.Runnable) 
+    http://download.oracle.com/javase/6/docs/api/javax/swing/SwingUtilities.html#invokeLater(java.lang.Runnable)
   "
   [& body] `(invoke-soon* (fn [] ~@body)))
 
-(defn signaller* 
-  "Returns a function that conditionally queues the given function (+ args) on 
+(defn signaller*
+  "Returns a function that conditionally queues the given function (+ args) on
   the UI thread. The call is only queued if there is not already a pending call
-  queued. 
-  
+  queued.
+
   Suppose you're performing some computation in the background and want
   to signal some UI component to update. Normally you'd use (seesaw.core/invoke-later)
   but that can easily flood the UI thread with unnecessary updates. That is,
@@ -96,9 +96,9 @@
 
   Examples:
 
-    ; Increment a number in a thread and signal the UI to update a label
-    ; with the current value. Without a signaller, the loop would send
-    ; updates way way way faster than the UI thread could handle them.
+    ;; Increment a number in a thread and signal the UI to update a label
+    ;; with the current value. Without a signaller, the loop would send
+    ;; updates way way way faster than the UI thread could handle them.
     (defn counting-text-box []
       (let [display (label :text \"0\")
             value   (atom 0)
@@ -114,7 +114,7 @@
 
     You probably want to use the (seesaw.invoke/signaller) convenience
     form.
-  
+
   See:
     (seesaw.invoke/invoke-later)
     (seesaw.invoke/signaller)
@@ -124,22 +124,22 @@
     (fn [& args]
       (let [do-it (compare-and-set! active? false true)]
         (when do-it
-          (invoke-later 
-            (apply f args) 
-            (reset! active? false)))
+          (invoke-later
+           (apply f args)
+           (reset! active? false)))
         do-it))))
 
-(defmacro signaller 
+(defmacro signaller
   "Convenience form of (seesaw.invoke/signaller*).
-  
+
   A use of signaller* like this:
-  
+
     (signaller* (fn [x y z] ... body ...))
-  
+
   can be written like this:
-  
+
     (signaller [x y z] ... body ...)
-  
+
   See:
     (seesaw.invoke/signaller*)
   "
